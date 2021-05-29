@@ -534,7 +534,7 @@ if __name__ == '__main__':
         hyp = yaml.load(f, Loader=yaml.SafeLoader)  # load hyps
     
     #preprocess:
-    if opt.preprocess and not os.path.exists('/content/train') and not os.path.exists('/content/test') and not os.path.exists('/content/valid'):
+    if opt.preprocess:
       lab_multis.labels_multi()
       print('entre a la opcion de preprocesado')
     else:
