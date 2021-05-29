@@ -5,15 +5,15 @@ import lab_multis as lm
 from utils.datasets import letterbox
 from utils.general import check_img_size
 path_imagenes = '/content/prueba_data/' #'C:/Users/carit/PycharmProjects/tutorial/data_2/'#'C:/Users/carit/Documents/L377506/L377506/oblique/'#
-path_save_images = '/content/train/images/'#'C:/Users/carit/PycharmProjects/tutorial/carpetadata/'#
-path_save_labels = '/content/train/labels/'
+path_save_images = '/content/random/images/'#'C:/Users/carit/PycharmProjects/tutorial/carpetadata/'#
+path_save_labels = '/content/random/labels/'
 new_center = 0
 
 def crear_texto(img,objeto,w_real,h_real,name,cx,cy,boxes,prox):
     h_label =h_real/(prox*img.shape[0])
     w_label = w_real / (prox*img.shape[1])
     texto_label = '{} {} {} {} {}'.format(objeto, cx, cy, w_label, h_label)
-    doc = open(path_save_labels+name+str(boxes)+'.txt', 'w')
+    doc = open(path_save_labels+name+'_'+str(prox)+'_'+str(boxes)+'.txt', 'w')
     doc.write(texto_label)
 
 
@@ -72,4 +72,4 @@ def one_shot_imagen(prox,img,name,labels):
                 limy2 = alto
             imgcrop = img[limy1:limy2, limx1:limx2]
             crear_texto(img_t, objeto, w_real, h_real, name, cx_txt, cy_txt, boxes, prox)
-            cv2.imwrite(path_save_images + name + str(boxes) + '.jpg', imgcrop)
+            cv2.imwrite(path_save_images + name+'_'+str(prox)+'_'+ + str(boxes) + '.jpg', imgcrop)
