@@ -24,7 +24,7 @@ def divide_img(data_setbase):
             except Exception as e:
                 pass
                 # print(e)
-    numero_img_random = 3  # numero de imagenes random que escogere por cada imagen del dataset base
+    numero_img_random = 6  # numero de imagenes random que escogere por cada imagen del dataset base
       # LISTA DE IMAGENES TRAIN------->>> !!!!!!!!!!!!!!!!check it
     file_list = os.listdir(src_dir)  # Lista total de imgs creadas con el factor multiplicativo
     print('Cantidad de donde escoger: ' + str(len(file_list)))#numero de imagenes en random imagenes
@@ -43,23 +43,23 @@ def divide_img(data_setbase):
                             dst_dir[0] + files_dst[1] + a.replace('.jpg', '.txt'))
                 nombre_imagen.remove(a)
         nombre_imagen = []
-        train_n_images = int(len(os.listdir(train_path)))
-        eval_n_images = int((15 * train_n_images) / 80)
-        test_n_images = int((5 * train_n_images) / 80)
-        division_imagenes = [eval_n_images, test_n_images]
-        contador = 1
-        for i in division_imagenes:
-            for j in range(i):
-                file_list = os.listdir(src_dir)
-                a = random.choice(file_list)
-                shutil.move(src_dir + a, dst_dir[contador] + files_dst[0] + a)
+    train_n_images = int(len(os.listdir(train_path)))
+    eval_n_images = int((15 * train_n_images) / 80)
+    test_n_images = int((5 * train_n_images) / 80)
+    division_imagenes = [eval_n_images, test_n_images]
+    contador = 1
+    for i in division_imagenes:
+        for j in range(i):
+            file_list = os.listdir(src_dir)
+            a = random.choice(file_list)
+            shutil.move(src_dir + a, dst_dir[contador] + files_dst[0] + a)
 
-            random_list = os.listdir(dst_dir[contador] + files_dst[0])
-            for h in random_list:
-                fn, ftext = os.path.splitext(h)
-                if os.path.exists(src_labels + fn + '.txt'):
-                    shutil.move(src_labels + fn + '.txt', dst_dir[contador] + files_dst[1] + fn + '.txt')
-            contador += 1
+        random_list = os.listdir(dst_dir[contador] + files_dst[0])
+        for h in random_list:
+            fn, ftext = os.path.splitext(h)
+            if os.path.exists(src_labels + fn + '.txt'):
+                shutil.move(src_labels + fn + '.txt', dst_dir[contador] + files_dst[1] + fn + '.txt')
+        contador += 1
 
 def escalado_inicial(fn, path_imagenes_t, path_save_files, path_save_filest,img,w_deseado,h_deseado): #nombre, y random_files random_txt, imagen
     imgResize = cv2.resize(img, (w_deseado, h_deseado))
