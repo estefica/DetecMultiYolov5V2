@@ -60,7 +60,7 @@ def crear_doc_texto(b_f1x, b_f1y, b_f4x, b_f4y, nombre, lleno1, lleno2, limx, li
     h = round(h / alto_deseado, 8)
     if 0 <= cx <= 1 and 0 <= cy <= 1:
 
-        if wabs >= 0.38 * w_total[indicep] and habs >= 0.38 * h_total[indicep]:
+        if wabs >= 0.3 * w_total[indicep] and habs >= 0.25 * h_total[indicep]:
 
             w = 0.95 * w
             h = 0.95 * h
@@ -246,9 +246,10 @@ def labels_multi():
     for f in os.listdir(path_imagenes):
         if f.endswith('.jpg'):
             fn, ftext = os.path.splitext(f)
-            data_setbase.append(f)
+            
             if os.path.exists(path_imagenes + fn + '.txt'):
                 img = cv2.imread(path_imagenes + f'{fn}.jpg')
+                data_setbase.append(f)
                 f = open(path_imagenes + fn + '.txt')
                 labels = np.array([x.split() for x in f.read().strip().splitlines()],
                                   dtype=np.float32)  # labels
