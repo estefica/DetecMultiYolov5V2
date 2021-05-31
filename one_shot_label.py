@@ -1,4 +1,4 @@
-import cv2,os
+import cv2,os,shutil
 import numpy as np
 import lab_multis as lm
 
@@ -13,7 +13,7 @@ def crear_texto(img,objeto,w_real,h_real,name,cx,cy,boxes,prox):
     h_label =h_real/(prox*img.shape[0])
     w_label = w_real / (prox*img.shape[1])
     texto_label = '{} {} {} {} {}'.format(objeto, cx, cy, w_label, h_label)
-    doc = open(path_save_labels+name+'_'+str(prox)+'_'+str(boxes)+'.txt', 'w')
+    doc = open(path_save_images+name+str(boxes)+'_'+str(prox)+'.txt', 'w')
     doc.write(texto_label)
 
 
@@ -48,28 +48,38 @@ def one_shot_imagen(prox,img,name,labels):
             if limx1 < 0:
                 new_center = int(limx1)
                 new_center /= img_t.shape[1]
-                cx_txt = 0.5 + new_center
+                nw2 = (cx_real - int((img_t.shape[1] / 2)))/img_t.shape[1]
+                cx_txt = 0.5 + (new_center/prox) + nw2*0.8
                 w_real *= 0.95
                 limx1 = 0
             if limx2 > ancho:
                 new_center = int(limx2 - ancho)
                 new_center /= img_t.shape[0]
-                cx_txt = 0.5 + new_center
+                nw2 = (cx_real + int((img_t.shape[1] / 2)))/img_t.shape[1]
+                cx_txt = 0.5 + (new_center/prox)  + nw2*0.8
                 w_real *= 0.95
                 limx2 = ancho
             if limy1 < 0:
                 new_center = limy1
                 new_center /= img_t.shape[1]
-                cy_txt = 0.5 + new_center
+                nw2 = (cy_real - int((img_t.shape[1] / 2)))/img_t.shape[1]
+                cy_txt = 0.5 +(new_center/prox)  + nw2*0.8
                 h_real *= 0.95
                 limy1 = 0
 
             if limy2 > alto:
                 new_center = int(limy2 - alto)
                 new_center /= img_t.shape[0]
-                cy_txt = 0.5 + new_center
+                nw2 = (cy_real + int((img_t.shape[1] / 2)))/img_t.shape[1]
+                cy_txt = 0.5 + (new_center/prox)  + nw2*0.8
                 h_real *= 0.95
                 limy2 = alto
             imgcrop = img[limy1:limy2, limx1:limx2]
             crear_texto(img_t, objeto, w_real, h_real, name, cx_txt, cy_txt, boxes, prox)
-            cv2.imwrite(path_save_images + name+'_'+str(prox)+'_'+ + str(boxes) + '.jpg', imgcrop)
+            cv2.imwrite(path_save_images+name+str(boxes)+'_'+str(prox)+'.jpg', imgcrop)
+            if prox != 1:
+              img_n = cv2.imread(path_save_images+name+str(boxes)+'_'+str(prox)+'.jpg')
+              img_n = cv2.resize(img_n, (960, 720))
+              cv2.imwrite(path_save_images + name + '_new_' + str(boxes) + '_' + str(prox) + '.jpg',img_n)
+              shutil.copy(path_save_images+name+str(boxes)+'_'+str(prox)+'.txt',path_save_images + name + '_new_' + str(boxes) + '_' + str(prox) + '.txt')
+                        
