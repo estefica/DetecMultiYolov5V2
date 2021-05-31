@@ -264,6 +264,8 @@ def labels_multi():
                     one_shot_label.one_shot_imagen(prox, img,fn,labels)
                     prox = 2
                     one_shot_label.one_shot_imagen(prox, img,fn,labels)
+                    prox = 2.5
+                    one_shot_label.one_shot_imagen(prox, img,fn,labels)
                     gridl = [g for g in range(2, int(img.shape[1] / ancho_deseado) + 1)]
                     for grid in gridl:
                         path_save_files =  path_save_f + f'{fn}_{grid}'
