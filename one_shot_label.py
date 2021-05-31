@@ -13,7 +13,8 @@ def crear_texto(img,objeto,w_real,h_real,name,cx,cy,boxes,prox):
     h_label =h_real/(prox*img.shape[0])
     w_label = w_real / (prox*img.shape[1])
     texto_label = '{} {} {} {} {}'.format(objeto, cx, cy, w_label, h_label)
-    doc = open(path_save_images+name+str(boxes)+'_'+str(prox)+'.txt', 'w')
+    doc = open(path_save_labels+name+str(boxes)+'_'+str(prox)+'.txt', 'w')
+    
     doc.write(texto_label)
 
 
@@ -81,5 +82,5 @@ def one_shot_imagen(prox,img,name,labels):
               img_n = cv2.imread(path_save_images+name+str(boxes)+'_'+str(prox)+'.jpg')
               img_n = cv2.resize(img_n, (960, 720))
               cv2.imwrite(path_save_images + name + '_new_' + str(boxes) + '_' + str(prox) + '.jpg',img_n)
-              shutil.copy(path_save_images+name+str(boxes)+'_'+str(prox)+'.txt',path_save_images + name + '_new_' + str(boxes) + '_' + str(prox) + '.txt')
-                        
+              shutil.copy(path_save_labels+name+str(boxes)+'_'+str(prox)+'.txt',path_save_labels + name + '_new_' + str(boxes) + '_' + str(prox) + '.txt')
+                           
