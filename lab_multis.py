@@ -3,6 +3,7 @@ import cv2  # computer vision
 import os
 import divide_images
 import one_shot_label
+import data_img_v1
 
 
 # Funciones cambio label YOLO to RECTANGLE, (p1x,p1y) :(s1x,s1y)
@@ -60,7 +61,7 @@ def crear_doc_texto(b_f1x, b_f1y, b_f4x, b_f4y, nombre, lleno1, lleno2, limx, li
     h = round(h / alto_deseado, 8)
     if 0 <= cx <= 1 and 0 <= cy <= 1:
 
-        if wabs >= 0.3 * w_total[indicep] and habs >= 0.25 * h_total[indicep]:
+        if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[indicep]:
 
             w = 0.95 * w
             h = 0.95 * h
@@ -89,7 +90,7 @@ def img_txt(final):
     w, h, wabs, habs, final = crear_doc_texto(b_f1x, b_f1y, b_f4x, b_f4y, path_save_filest + 'obj[{}]_im{}.txt',
                                               indicep, n, limites_ancho[x], limites_alto[y], final)
     # cv2.rectangle(imgResize, (b_f1x, b_f1y), (b_f4x, b_f4y), (0, 255, 0), 10)
-    if wabs >= 0.3 * w_total[indicep] and habs >= 0.25 * h_total[indicep]:
+    if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[indicep]:
         cv2.imwrite(path_save_files + 'obj[{}]_im{}.jpg'.format(indicep, n), imgcrop)
     return
 
@@ -266,6 +267,7 @@ def labels_multi():
                     one_shot_label.one_shot_imagen(prox, img,fn,labels)
                     prox = 2.5
                     one_shot_label.one_shot_imagen(prox, img,fn,labels)
+                    data_img_v1.all_objects(img,labels,fn)
                     gridl = [g for g in range(2, int(img.shape[1] / ancho_deseado) + 1)]
                     for grid in gridl:
                         path_save_files =  path_save_f + f'{fn}_{grid}'
@@ -473,7 +475,7 @@ def labels_multi():
                                                                             borde_iz1,
                                                                             limites_alto_complemento[iz], final)
 
-                                                            if wabs >= 0.3 * w_total[indicep] and habs >= 0.25 * \
+                                                            if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * \
                                                                     h_total[
                                                                         indicep]:
                                                                 cv2.imwrite(path_save_files + 'obj{}_iz{}.jpg'.format(
@@ -506,7 +508,7 @@ def labels_multi():
                                                                             borde_der1,
                                                                             limites_alto_complemento[der], final)
 
-                                                        if wabs >= 0.3 * w_total[indicep] and habs >= 0.25 * h_total[
+                                                        if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[
                                                             indicep]:
                                                             cv2.imwrite(
                                                                 path_save_files + 'obj{}_der{}.jpg'.format(
@@ -534,7 +536,7 @@ def labels_multi():
                                                                         [objeto_region[key][6]],
                                                                         imagen_numero, limites_ancho_complemento[sup],
                                                                         borde_sup1, final)
-                                                        if wabs >= 0.3 * w_total[indicep] and habs >= 0.25 * h_total[
+                                                        if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[
                                                             indicep]:
                                                             cv2.imwrite(path_save_files + 'obj{}_sup{}.jpg'.format(
                                                                 [objeto_region[key][6]], imagen_numero), imgcrop)
@@ -557,7 +559,7 @@ def labels_multi():
                                                                         [objeto_region[key][6]],
                                                                         imagen_numero, limites_ancho_complemento[inf],
                                                                         borde_inf1, final)
-                                                        if wabs >= 0.3 * w_total[indicep] and habs >= 0.25 * h_total[
+                                                        if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[
                                                             indicep]:
                                                             cv2.imwrite(path_save_files + 'obj{}_inf{}.jpg'.format(
                                                                 [objeto_region[key][6]], imagen_numero), imgcrop)
