@@ -31,7 +31,7 @@ def points_borders(ptos1x,ptos1y,ptos2x,ptos2y):
     p2y_l = np.amax(ptos2y)
 
     return p1x_l,p1y_l,p2x_l,p2y_l
-def crop_limits(p1x_l, p1y_l, p2x_l, p2y_l,x_aumt,y_aumt):
+def crop_limits(p1x_l, p1y_l, p2x_l, p2y_l,x_aumt,y_aumt,ancho,alto):
     limx1 = p1x_l - x_aumt
     limx2 = p2x_l + x_aumt
     limy1 = p1y_l - y_aumt
@@ -76,7 +76,7 @@ def all_objects(img_d,labels,name):
         #definicion de limites recorte
         x_aumt = int(0.02*ancho)
         y_aumt = int(0.02*alto)
-        limx1,limx2,limy1,limy2,x_ch,y_ch = crop_limits(p1x_l, p1y_l, p2x_l, p2y_l,x_aumt,y_aumt)
+        limx1,limx2,limy1,limy2,x_ch,y_ch = crop_limits(p1x_l, p1y_l, p2x_l, p2y_l,x_aumt,y_aumt,ancho,alto)
         ancho_new = limx2 - limx1
         alto_new = limy2 - limy1
         img_resize = img[limy1:limy2,limx1:limx2]
