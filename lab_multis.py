@@ -61,7 +61,7 @@ def crear_doc_texto(b_f1x, b_f1y, b_f4x, b_f4y, nombre, lleno1, lleno2, limx, li
     h = round(h / alto_deseado, 8)
     if 0 <= cx <= 1 and 0 <= cy <= 1:
 
-        if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[indicep]:
+        if wabs >= 0.4 * w_total[indicep] and habs >= 0.4 * h_total[indicep]:
 
             w = 0.95 * w
             h = 0.95 * h
@@ -90,7 +90,7 @@ def img_txt(final):
     w, h, wabs, habs, final = crear_doc_texto(b_f1x, b_f1y, b_f4x, b_f4y, path_save_filest + 'obj[{}]_im{}.txt',
                                               indicep, n, limites_ancho[x], limites_alto[y], final)
     # cv2.rectangle(imgResize, (b_f1x, b_f1y), (b_f4x, b_f4y), (0, 255, 0), 10)
-    if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[indicep]:
+    if wabs >= 0.4 * w_total[indicep] and habs >= 0.4 * h_total[indicep]:
         cv2.imwrite(path_save_files + 'obj[{}]_im{}.jpg'.format(indicep, n), imgcrop)
     return
 
@@ -215,8 +215,7 @@ def labels_multi():
     alto_deseado = 720
     ancho_deseado = 960
 
-    dst_dir = ['/content/train', '/content/random']
-    files_dst = ['/images/', '/labels/']
+    
     path_ima = '/content/prueba_data/'
     path_ima_t = '/content/prueba_data/'
     path_s_files = '/content/train/images/'
@@ -225,36 +224,41 @@ def labels_multi():
     path_save_f = f'/content/random/images/'
     path_save_ft = f'/content/random/labels/'
     data_setbase = []
-
+    dst_dir = ['/content/train/', '/content/valid/', '/content/test/','/content/random/']
+    files_dst = ['images/', 'labels/']
+    id_img = 0
 
     for i in dst_dir:
         try:
-            # print('entre')
             os.mkdir(i)
-            # print(dst_dir)
-            for j in files_dst:
-                try:
-                    os.mkdir(i + j)
-                except:
-                    pass
-                print('ya existe carpeta')
         except Exception as e:
-            print(e)
+            pass
+            # print(e)
+
+    for i in dst_dir:
+        for j in files_dst:
+            try:
+                os.mkdir(i + j)
+            except Exception as e:
+                pass
 
     # print('DEBERIA HACER EL ESCALADO A 1')
 
     lista_total_data = os.listdir(path_imagenes)
     for f in os.listdir(path_imagenes):
+        
         if f.endswith('.jpg'):
             fn, ftext = os.path.splitext(f)
             
             if os.path.exists(path_imagenes + fn + '.txt'):
+                id_img +=1
                 img = cv2.imread(path_imagenes + f'{fn}.jpg')
                 data_setbase.append(f)
                 f = open(path_imagenes + fn + '.txt')
                 labels = np.array([x.split() for x in f.read().strip().splitlines()],
                                   dtype=np.float32)  # labels
                 if labels.shape[1] == 5:
+
                     #Escalado inicial
                     divide_images.escalado_inicial(fn, path_imagenes, path_save_f, path_save_ft,img,ancho_deseado,alto_deseado)
                     #solo el objeto
@@ -267,7 +271,7 @@ def labels_multi():
                     one_shot_label.one_shot_imagen(prox, img,fn,labels)
                     prox = 2.5
                     one_shot_label.one_shot_imagen(prox, img,fn,labels)
-                    data_img_v1.all_objects(img,labels,fn)
+                    data_img_v1.all_objects(img,labels,fn,id_img)
                     gridl = [g for g in range(2, int(img.shape[1] / ancho_deseado) + 1)]
                     for grid in gridl:
                         path_save_files =  path_save_f + f'{fn}_{grid}'
@@ -475,9 +479,7 @@ def labels_multi():
                                                                             borde_iz1,
                                                                             limites_alto_complemento[iz], final)
 
-                                                            if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * \
-                                                                    h_total[
-                                                                        indicep]:
+                                                            if wabs >= 0.4 * w_total[indicep] and habs >= 0.4 *h_total[indicep]:
                                                                 cv2.imwrite(path_save_files + 'obj{}_iz{}.jpg'.format(
                                                                     [objeto_region[key][6]], imagen_numero), imgcrop)
                                                                 imagen_numero += 1  # wabs >=0.38*w_total[indicep] and habs >=0.27*h_total[indicep]
@@ -508,8 +510,7 @@ def labels_multi():
                                                                             borde_der1,
                                                                             limites_alto_complemento[der], final)
 
-                                                        if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[
-                                                            indicep]:
+                                                        if wabs >= 0.4 * w_total[indicep] and habs >= 0.4 * h_total[indicep]:
                                                             cv2.imwrite(
                                                                 path_save_files + 'obj{}_der{}.jpg'.format(
                                                                     [objeto_region[key][6]], imagen_numero),
@@ -536,7 +537,7 @@ def labels_multi():
                                                                         [objeto_region[key][6]],
                                                                         imagen_numero, limites_ancho_complemento[sup],
                                                                         borde_sup1, final)
-                                                        if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[
+                                                        if wabs >= 0.4 * w_total[indicep] and habs >= 0.4 * h_total[
                                                             indicep]:
                                                             cv2.imwrite(path_save_files + 'obj{}_sup{}.jpg'.format(
                                                                 [objeto_region[key][6]], imagen_numero), imgcrop)
@@ -559,8 +560,7 @@ def labels_multi():
                                                                         [objeto_region[key][6]],
                                                                         imagen_numero, limites_ancho_complemento[inf],
                                                                         borde_inf1, final)
-                                                        if wabs >= 0.3 * w_total[indicep] and habs >= 0.35 * h_total[
-                                                            indicep]:
+                                                        if wabs >= 0.4 * w_total[indicep] and habs >= 0.4 * h_total[indicep]:
                                                             cv2.imwrite(path_save_files + 'obj{}_inf{}.jpg'.format(
                                                                 [objeto_region[key][6]], imagen_numero), imgcrop)
                                                             imagen_numero += 1
@@ -590,9 +590,7 @@ def labels_multi():
                                                                             imagen_numero,
                                                                             limites_ancho_complemento[dx],
                                                                             limites_alto_complemento[dy], final)
-                                                            if wabs >= 0.3 * w_total[indicep] and habs >= 0.25 * \
-                                                                    h_total[
-                                                                        indicep]:
+                                                            if wabs >= 0.4 * w_total[indicep] and habs >= 0.4 * h_total[indicep]:
                                                                 cv2.imwrite(
                                                                     path_save_files + 'obj{}_centro{}.jpg'.format(
                                                                         [objeto_region[key][6]], imagen_numero),
