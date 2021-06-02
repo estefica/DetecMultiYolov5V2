@@ -83,4 +83,4 @@ def one_shot_imagen(prox,img,name,labels):
               img_n = cv2.resize(img_n, (960, 720))
               cv2.imwrite(path_save_images + name + '_new_' + str(boxes) + '_' + str(prox) + '.jpg',img_n)
               shutil.copy(path_save_labels+name+str(boxes)+'_'+str(prox)+'.txt',path_save_labels + name + '_new_' + str(boxes) + '_' + str(prox) + '.txt')
-                           
+                       
