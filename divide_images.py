@@ -5,26 +5,16 @@ import lab_multis
 def divide_img(data_setbase):
     src_dir = '/content/random/images/'
     train_path = '/content/train/images/'
+    valid_path =  '/content/valid/images/'
     dst_dir = ['/content/train/', '/content/valid/', '/content/test/']
     files_dst = ['images/', 'labels/']
     src_labels = '/content/random/labels/'
     menos_check = 0
+    porcent_train = 75
+    porcent_valid = 20
+    porcent_test = 5
 
-    for i in dst_dir:
-        try:
-            os.mkdir(i)
-        except Exception as e:
-            pass
-            # print(e)
-
-    for i in dst_dir:
-        for j in files_dst:
-            try:
-                os.mkdir(i + j)
-            except Exception as e:
-                pass
-                # print(e)
-    numero_img_random = 8  # numero de imagenes random que escogere por cada imagen del dataset base
+    numero_img_random = 6  # numero de imagenes random que escogere por cada imagen del dataset base
       # LISTA DE IMAGENES TRAIN------->>> !!!!!!!!!!!!!!!!check it
     file_list = os.listdir(src_dir)  # Lista total de imgs creadas con el factor multiplicativo
     print('Cantidad de donde escoger: ' + str(len(file_list)))#numero de imagenes en random imagenes
@@ -44,8 +34,8 @@ def divide_img(data_setbase):
                 nombre_imagen.remove(a)
         nombre_imagen = []
     train_n_images = int(len(os.listdir(train_path)))
-    eval_n_images = int((15 * train_n_images) / 80)
-    test_n_images = int((5 * train_n_images) / 80)
+    eval_n_images = int((porcent_valid * train_n_images) / porcent_train) - int(len(os.listdir(valid_path)))
+    test_n_images = int((porcent_test * train_n_images) / porcent_train)
     division_imagenes = [eval_n_images, test_n_images]
     contador = 1
     for i in division_imagenes:
