@@ -1,8 +1,10 @@
 import os, shutil,cv2
 import numpy as np
 
-path_save_images = '/content/random/images/'#'C:/Users/carit/PycharmProjects/tutorial/carpetadata/'#
-path_save_labels = '/content/random/labels/'
+path_save_images = '/content/train/images/'#'C:/Users/carit/PycharmProjects/tutorial/carpetadata/'#
+path_save_labels = '/content/train/labels/'
+path_save_imagesd = '/content/valid/images/'#'C:/Users/carit/PycharmProjects/tutorial/carpetadata/'#
+path_save_labelsd = '/content/valid/labels/'
 path_images =  '/content/prueba_data/'
 lista_read = os.listdir(path_images)
 
@@ -53,7 +55,7 @@ def crop_limits(p1x_l, p1y_l, p2x_l, p2y_l,x_aumt,y_aumt,ancho,alto):
     return limx1,limx2,limy1,limy2,x_ch,y_ch
 
 
-def all_objects(img_d,labels,name):
+def all_objects(img_d,labels,name,id_img):
     ptos1x = []
     ptos1y = []
     ptos2x = []
@@ -80,7 +82,14 @@ def all_objects(img_d,labels,name):
         ancho_new = limx2 - limx1
         alto_new = limy2 - limy1
         img_resize = img[limy1:limy2,limx1:limx2]
-        cv2.imwrite(path_save_images+name+'_all_b'+'.jpg', img_resize)
+        if id_img%5==0:
+          cv2.imwrite(path_save_imagesd+name+'_all_b'+'.jpg', img_resize)
+          doc = open(path_save_labelsd+name+'_all_b'+'.txt', 'w')
+        else:
+          cv2.imwrite(path_save_images+name+'_all_b'+'.jpg', img_resize)
+          doc = open(path_save_labels+name+'_all_b'+'.txt', 'w')
+
+
         #print(border_all)
         for key in border_all.keys():
             cx = border_all[key][0]
@@ -97,7 +106,7 @@ def all_objects(img_d,labels,name):
             w = w_o/ancho_new
             h = h_o/alto_new
             final[key] = [objeto,cx,cy,w,h]
-        doc = open(path_save_labels+name+'_all_b'+'.txt', 'w')
+        
         for n in range(final.shape[0]):
             objetost=int(final[n][0])
             cx =final[n][1]
