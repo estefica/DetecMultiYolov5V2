@@ -15,7 +15,7 @@ def divide_img(data_setbase):
     porcent_valid = 20
     porcent_test = 5
 
-    numero_img_random = 2  # numero de imagenes random que escogere por cada imagen del dataset base
+    numero_img_random = 7  # numero de imagenes random que escogere por cada imagen del dataset base
       # LISTA DE IMAGENES TRAIN------->>> !!!!!!!!!!!!!!!!check it
     file_list = os.listdir(src_dir)  # Lista total de imgs creadas con el factor multiplicativo
     print('Cantidad de donde escoger: ' + str(len(file_list)))#numero de imagenes en random imagenes
