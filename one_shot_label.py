@@ -47,34 +47,29 @@ def one_shot_imagen(prox,img,name,labels):
             cx_txt = 0.5
             cy_txt = 0.5
             if limx1 < 0:
-                new_center = int(limx1)
-                new_center /= img_t.shape[1]
-                nw2 = (cx_real - int((img_t.shape[1] / 2)))/img_t.shape[1]
-                cx_txt = 0.5 + (new_center/prox) + nw2*0.8
-                w_real *= 0.95
+                new_center = int((limx2-limx1)/2)
+                new_center = limx2 - new_center
                 limx1 = 0
-            if limx2 > ancho:
-                new_center = int(limx2 - ancho)
-                new_center /= img_t.shape[0]
-                nw2 = (cx_real + int((img_t.shape[1] / 2)))/img_t.shape[1]
-                cx_txt = 0.5 + (new_center/prox)  + nw2*0.8
+                cx_txt = new_center/(limx2-limx1)
+                #print(cx_txt)
                 w_real *= 0.95
+            if limx2 > ancho:
+                new_center = int((limx2-limx1)/2)
+                new_center = limx1 + new_center
                 limx2 = ancho
+                cx_txt = new_center/(limx2-limx1)
+                w_real *= 0.95
             if limy1 < 0:
-                new_center = limy1
-                new_center /= img_t.shape[1]
-                nw2 = (cy_real - int((img_t.shape[1] / 2)))/img_t.shape[1]
-                cy_txt = 0.5 +(new_center/prox)  + nw2*0.8
-                h_real *= 0.95
+                new_center = int(limy2-(limy2-limy1)/2)
                 limy1 = 0
+                cy_txt = new_center/(limy2-limy1)
+                h_real *= 0.95
 
             if limy2 > alto:
-                new_center = int(limy2 - alto)
-                new_center /= img_t.shape[0]
-                nw2 = (cy_real + int((img_t.shape[1] / 2)))/img_t.shape[1]
-                cy_txt = 0.5 + (new_center/prox)  + nw2*0.8
-                h_real *= 0.95
+                new_center = int(limy1+(limy2-limy1)/2)
                 limy2 = alto
+                cy_txt = new_center/(limy2-limy1)
+                h_real *= 0.95
             imgcrop = img[limy1:limy2, limx1:limx2]
             crear_texto(img_t, objeto, w_real, h_real, name, cx_txt, cy_txt, boxes, prox)
             cv2.imwrite(path_save_images+name+str(boxes)+'_'+str(prox)+'.jpg', imgcrop)
