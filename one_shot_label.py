@@ -52,7 +52,7 @@ def one_shot_imagen(prox,img,name,labels):
               new_center = limx2 - new_center
               limx1 = 0
               cx_txt = new_center / (limx2 - limx1)
-              print(cx_txt)
+              #print(cx_txt)
               w_real *= 0.97
                 
             if limx2 > ancho:
