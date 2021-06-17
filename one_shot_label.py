@@ -1,6 +1,8 @@
 import cv2,os,shutil
 import numpy as np
 import lab_multis as lm
+import imgaug as ia # imgaug
+import imgaug.augmenters as iaa
 
 from utils.datasets import letterbox
 from utils.general import check_img_size
