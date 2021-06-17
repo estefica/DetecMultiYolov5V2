@@ -17,7 +17,6 @@ def crear_texto(img,objeto,w_real,h_real,name,cx,cy,boxes,prox):
     
     doc.write(texto_label)
 
-
 def one_shot_imagen(prox,img,name,labels):
     ancho1 = img.shape[1]
     alto1 = img.shape[0]
@@ -47,30 +46,37 @@ def one_shot_imagen(prox,img,name,labels):
             cx_txt = 0.5
             cy_txt = 0.5
             if limx1 < 0:
-                new_center = int((limx2-limx1)/2)
-                new_center = limx2 - new_center
-                limx1 = 0
-                cx_txt = new_center/(limx2-limx1)
-                #print(cx_txt)
-                w_real *= 0.95
+              new_center = int((limx2 - limx1) / 2)
+              new_center = limx2 - new_center
+              limx1 = 0
+              cx_txt = new_center / (limx2 - limx1)
+              print(cx_txt)
+              w_real *= 0.97
+                
             if limx2 > ancho:
-                new_center = int((limx2-limx1)/2)
-                new_center = limx1 + new_center
-                limx2 = ancho
-                cx_txt = new_center/(limx2-limx1)
-                w_real *= 0.95
+              new_center = int((limx2 - limx1) / 2)
+              limx2 = ancho
+              cx_txt = new_center / (limx2 - limx1)
+              w_real *= 0.97
+                
             if limy1 < 0:
-                new_center = int(limy2-(limy2-limy1)/2)
-                limy1 = 0
-                cy_txt = new_center/(limy2-limy1)
-                h_real *= 0.95
+              new_center = int(limy2 - (limy2 - limy1) / 2)
+              limy1 = 0
+              cy_txt = new_center / (limy2 - limy1)
+              h_real *= 0.97
+                
 
             if limy2 > alto:
-                new_center = int(limy1+(limy2-limy1)/2)
-                limy2 = alto
-                cy_txt = new_center/(limy2-limy1)
-                h_real *= 0.95
+              new_center = int((limy2 - limy1)/2)
+              #print(new_center)
+              limy2 = alto
+              #print(f'soy alto dos:{limy2 - limy1}')
+              cy_txt = new_center/(limy2 - limy1)
+              #print(f'\n el cy:{cy_txt}')
+              h_real *= 0.97
+                
             imgcrop = img[limy1:limy2, limx1:limx2]
+            imgcrop = ia.imresize_single_image(imgcrop, 0.5, "cubic")
             crear_texto(img_t, objeto, w_real, h_real, name, cx_txt, cy_txt, boxes, prox)
             cv2.imwrite(path_save_images+name+str(boxes)+'_'+str(prox)+'.jpg', imgcrop)
             if prox != 1:
