@@ -61,7 +61,7 @@ def crear_doc_texto(b_f1x, b_f1y, b_f4x, b_f4y, nombre, lleno1, lleno2, limx, li
     h = round(h / alto_deseado, 8)
     if 0 <= cx <= 1 and 0 <= cy <= 1:
 
-        if wabs >= 0.4 * w_total[indicep] and habs >= 0.25 * h_total[indicep]:
+        if wabs >= p_ancho * w_total[indicep] and habs >= p_alto * h_total[indicep]:
 
             w = 0.95 * w
             h = 0.95 * h
@@ -70,8 +70,6 @@ def crear_doc_texto(b_f1x, b_f1y, b_f4x, b_f4y, nombre, lleno1, lleno2, limx, li
 
             doc = open(nombre.format(lleno1, lleno2), 'w')
             if texto_m > 0:
-                # print('000000000 final')
-                # print(f'final respaldo: {final_respaldo}')
                 doc.write(final_alt)
                 doc.write(final_respaldo)
             else:
@@ -90,7 +88,7 @@ def img_txt(final):
     w, h, wabs, habs, final = crear_doc_texto(b_f1x, b_f1y, b_f4x, b_f4y, path_save_filest + 'obj[{}]_im{}.txt',
                                               indicep, n, limites_ancho[x], limites_alto[y], final)
     # cv2.rectangle(imgResize, (b_f1x, b_f1y), (b_f4x, b_f4y), (0, 255, 0), 10)
-    if wabs >= 0.4 * w_total[indicep] and habs >= 0.25 * h_total[indicep]:
+    if wabs >= p_ancho * w_total[indicep] and habs >= p_alto * h_total[indicep]:
         cv2.imwrite(path_save_files + 'obj[{}]_im{}.jpg'.format(indicep, n), imgcrop)
     return
 
@@ -209,9 +207,9 @@ def limites_ancho_alto(alto, alto_deseado, ancho, ancho_deseado):
 def labels_multi():
     path_imagenes = '/content/prueba_data/'
 
-    global path_save_files, w, h, path_save_filest, grid, w_total, h_total, indicep, final_respaldo, final, keyn
+    global path_save_files, w, h, path_save_filest, grid, w_total, h_total, indicep, final_respaldo, final, keyn, fn
     global limites_alto, limites_ancho, puntos, puntos_x, puntos_y, w_total, h_total, num_objeto, n, c, cont, paso, objeto_region
-    global rec_x, aux, x, y, bb, ancho_deseado, alto_deseado, objeto, texto_m, imgcrop,data_setbase
+    global rec_x, aux, x, y, bb, ancho_deseado, alto_deseado, objeto, texto_m, imgcrop,data_setbase,p_ancho,p_alto
     alto_deseado = 720
     ancho_deseado = 960
 
@@ -227,6 +225,8 @@ def labels_multi():
     dst_dir = ['/content/train/', '/content/valid/', '/content/test/','/content/random/']
     files_dst = ['images/', 'labels/']
     id_img = 0
+    p_ancho = 0.51
+    p_alto = 0.45
 
     for i in dst_dir:
         try:
@@ -274,6 +274,7 @@ def labels_multi():
                     data_img_v1.all_objects(img,labels,fn,id_img)
                     gridl = [g for g in range(2, int(img.shape[1] / ancho_deseado) + 1)]
                     for grid in gridl:
+                        #print('\n \n entre a grid')
                         path_save_files =  path_save_f + f'{fn}_{grid}'
                         path_save_filest = path_save_ft + f'{fn}_{grid}'
                         limites_alto = []
@@ -479,7 +480,7 @@ def labels_multi():
                                                                             borde_iz1,
                                                                             limites_alto_complemento[iz], final)
 
-                                                            if wabs >= 0.4 * w_total[indicep] and habs >= 0.25 *h_total[indicep]:
+                                                            if wabs >= p_ancho * w_total[indicep] and habs >= p_alto *h_total[indicep]:
                                                                 cv2.imwrite(path_save_files + 'obj{}_iz{}.jpg'.format(
                                                                     [objeto_region[key][6]], imagen_numero), imgcrop)
                                                                 imagen_numero += 1  # wabs >=0.38*w_total[indicep] and habs >=0.27*h_total[indicep]
@@ -487,9 +488,6 @@ def labels_multi():
                                                     # derecho
                                                     imagen_numero = 1
                                                     for der in range(len(limites_alto_complemento) - 1):
-                                                        # cv2.rectangle(imgResize, (borde_der1, limites_alto_complemento[der]),
-                                                        #            (c2p2x, limites_alto_complemento[der + 1]), (0, 255, 0),
-                                                        #                15)
                                                         imgcrop = imgResize[
                                                                   limites_alto_complemento[der]:
                                                                   limites_alto_complemento[
@@ -510,7 +508,7 @@ def labels_multi():
                                                                             borde_der1,
                                                                             limites_alto_complemento[der], final)
 
-                                                        if wabs >= 0.4 * w_total[indicep] and habs >= 0.25 * h_total[indicep]:
+                                                        if wabs >= p_ancho * w_total[indicep] and habs >= p_alto * h_total[indicep]:
                                                             cv2.imwrite(
                                                                 path_save_files + 'obj{}_der{}.jpg'.format(
                                                                     [objeto_region[key][6]], imagen_numero),
@@ -537,7 +535,7 @@ def labels_multi():
                                                                         [objeto_region[key][6]],
                                                                         imagen_numero, limites_ancho_complemento[sup],
                                                                         borde_sup1, final)
-                                                        if wabs >= 0.4 * w_total[indicep] and habs >= 0.25 * h_total[
+                                                        if wabs >= p_ancho * w_total[indicep] and habs >= p_alto * h_total[
                                                             indicep]:
                                                             cv2.imwrite(path_save_files + 'obj{}_sup{}.jpg'.format(
                                                                 [objeto_region[key][6]], imagen_numero), imgcrop)
@@ -560,7 +558,7 @@ def labels_multi():
                                                                         [objeto_region[key][6]],
                                                                         imagen_numero, limites_ancho_complemento[inf],
                                                                         borde_inf1, final)
-                                                        if wabs >= 0.4 * w_total[indicep] and habs >= 0.25 * h_total[indicep]:
+                                                        if wabs >= p_ancho * w_total[indicep] and habs >= p_alto * h_total[indicep]:
                                                             cv2.imwrite(path_save_files + 'obj{}_inf{}.jpg'.format(
                                                                 [objeto_region[key][6]], imagen_numero), imgcrop)
                                                             imagen_numero += 1
@@ -569,10 +567,6 @@ def labels_multi():
                                                 if cuadros_anchof * cuadros_altof != 0:
                                                     for dx in range(len(limites_ancho_complemento) - 1):
                                                         for dy in range(len(limites_alto_complemento) - 1):
-                                                            # cv2.rectangle(imgResize, (
-                                                            # limites_ancho_complemento[dx], limites_alto_complemento[dy]), (
-                                                            #              limites_ancho_complemento[dx + 1],
-                                                            #             limites_alto_complemento[dy + 1]), (0, 255, 0), 15)
                                                             imgcrop = imgResize[
                                                                       limites_alto_complemento[dy]:
                                                                       limites_alto_complemento[
@@ -590,7 +584,7 @@ def labels_multi():
                                                                             imagen_numero,
                                                                             limites_ancho_complemento[dx],
                                                                             limites_alto_complemento[dy], final)
-                                                            if wabs >= 0.4 * w_total[indicep] and habs >= 0.25 * h_total[indicep]:
+                                                            if wabs >= p_ancho * w_total[indicep] and habs >= p_alto * h_total[indicep]:
                                                                 cv2.imwrite(
                                                                     path_save_files + 'obj{}_centro{}.jpg'.format(
                                                                         [objeto_region[key][6]], imagen_numero),
