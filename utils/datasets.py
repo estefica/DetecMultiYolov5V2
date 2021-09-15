@@ -11,6 +11,7 @@ from itertools import repeat
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from threading import Thread
+import number_shots #numero de cuaadros
 
 import cv2
 import numpy as np
@@ -134,13 +135,16 @@ class LoadImages:  # for inference
         images = [x for x in files if x.split('.')[-1].lower() in img_formats]
         videos = [x for x in files if x.split('.')[-1].lower() in vid_formats]
         ni, nv = len(images), len(videos)
-
+        
         self.img_size = img_size
         self.stride = stride
         self.files = images + videos
+        #print(f'\n\n numero de elementos: {self.files}\n\n ')
         self.nf = ni + nv  # number of files
         self.video_flag = [False] * ni + [True] * nv
         self.mode = 'image'
+        if any(images):
+            self.new_images(images[0])
         if any(videos):
             self.new_video(videos[0])  # new video
         else:
@@ -150,46 +154,122 @@ class LoadImages:  # for inference
 
     def __iter__(self):
         self.count = 0
+        self.cont_img = 0 #imagenes generadas
+        self.flag = 0
+        self.lecturaimagen = 0
+        self.img_lec =  np.array([])
+        self.video_ret = True
         return self
 
     def __next__(self):
-        if self.count == self.nf:
+        if self.count == self.nf: ##cuando se acaban los files se acaba todo el generador
             raise StopIteration
-        path = self.files[self.count]
+        path = self.files[self.count] #listo todos los files que tengo
+        p1 =path
 
         if self.video_flag[self.count]:
             # Read video
+
             self.mode = 'video'
-            ret_val, img0 = self.cap.read()
-            if not ret_val:
+            if self.lecturaimagen == 0:
+              ret_val, img0 = self.cap.read() # (ret: entrega la señal de que es el ultimo frame,imagen por frame)
+              self.video_ret = ret_val
+              if not self.video_ret:
                 self.count += 1
                 self.cap.release()
                 if self.count == self.nf:  # last video
-                    raise StopIteration
-                else:
-                    path = self.files[self.count]
-                    self.new_video(path)
-                    ret_val, img0 = self.cap.read()
+                  raise StopIteration
+                
+              self.video_images(img0)
+              self.lecturaimagen +=1
+              self.img_lec = img0
+            
+            img0 =self.img_lec
+            
+            im_test = self.images_createsf[self.numbershotsf][0]
+            x_cor = self.images_createsf[self.numbershotsf][1]
+            y_cor = self.images_createsf[self.numbershotsf][2]
+            escalay = self.images_createsf[self.numbershotsf][3]
+            escalax = self.images_createsf[self.numbershotsf][4]
+            h_escala = self.images_createsf[self.numbershotsf][5]
+            w_escala = self.images_createsf[self.numbershotsf][6]
+            nombre_archivo = os.path.basename(path)
+            namef, finfile = os.path.splitext(nombre_archivo)
 
-            self.frame += 1
-            print(f'video {self.count + 1}/{self.nf} ({self.frame}/{self.nframes}) {path}: ', end='')
+            if self.numbershotsf != self.nshotsf:
+              self.flag =0
+              self.numbershotsf +=1
+            
+            if self.numbershotsf == self.nshotsf:
+              self.flag = 1
+              self.numbershots =1
+              self.lecturaimagen = 0
+              if not self.video_ret:
+                self.count += 1
+                self.cap.release()
+                if self.count == self.nf:  # last video
+                  raise StopIteration
+                else:
+                  path = self.files[self.count] # en el ultimo frame actualizo el path
+                  self.new_video(path) # vuelvo a leer el video como en la inicializacion
+                  ret_val, img0= self.cap.read() #genero todos los frames, ret_val vuelver aser false
+              self.frame += 1
+              print(f'video {self.count + 1}/{self.nf} ({self.frame}/{self.nframes}) {path}: ', end='')
 
         else:
             # Read image
-            self.count += 1
-            img0 = cv2.imread(path)  # BGR
+            if self.lecturaimagen ==0:
+              self.img_lec = cv2.imread(path)  # BGR <<----------LEE LA IMAGEN
+              img0 = self.img_lec
+              self.lecturaimagen +=1
+            img0 =self.img_lec
+            im_test = self.images_creates[self.numbershots][0]
+            x_cor = self.images_creates[self.numbershots][1]
+            y_cor = self.images_creates[self.numbershots][2]
+            escalay = self.images_creates[self.numbershots][3]
+            escalax = self.images_creates[self.numbershots][4]
+            h_escala = self.images_creates[self.numbershots][5]
+            w_escala = self.images_creates[self.numbershots][6]
+            nombre_archivo = os.path.basename(path)
+            namef, finfile = os.path.splitext(nombre_archivo)
+            if self.numbershots != self.nshots:
+              self.flag =0
+            if self.numbershots == self.nshots:
+              self.flag = 1
+              self.count += 1
+              self.lecturaimagen = 0
+              print(f'&&&&image {self.count}/{self.nf} {path}: ', end='')
+              if self.count < self.nf and not self.video_flag[self.count]:
+                path = self.files[self.count]
+                self.numbershots =0
+                self.new_images(path)
+                self.lecturaimagen =0
             assert img0 is not None, 'Image Not Found ' + path
-            print(f'image {self.count}/{self.nf} {path}: ', end='')
+            self.numbershots +=1
+            if self.flag ==1:
+              self.numbershots =1# inicia el contador de los fragmentos
+              
 
         # Padded resize
-        img = letterbox(img0, self.img_size, stride=self.stride)[0]
+        img = letterbox(im_test, im_test.shape[0], stride=self.stride)[0]
 
         # Convert
         img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
         img = np.ascontiguousarray(img)
+        #print(f'\nFLAG{self.flag}')
+        return p1, img, img0, self.cap, self.flag,x_cor,y_cor,escalay,escalax,h_escala,w_escala
 
-        return path, img, img0, self.cap
+    
+    def video_images(self,image1):
+        self.numbershotsf = 1
+        self.nshotsf, self.images_createsf = number_shots.vid_img_num(image1)
 
+
+    def new_images(self,path):
+        self.numbershots = 1
+        self.nshots, self.images_creates = number_shots.img_num(path) #nshots:numerototaldewindows,image_creates:diccionario info windows
+        #print('estos son los numeros d eimagenes')
+        #print(self.nshots)
     def new_video(self, path):
         self.frame = 0
         self.cap = cv2.VideoCapture(path)
